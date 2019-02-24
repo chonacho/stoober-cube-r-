@@ -48,6 +48,10 @@ def generate_corners_sticker(center):
 def Cube():
     for i in range(len(tempColors)):
         draw_piece(5, i, tempColors[i])
+        draw_piece(4, i, tempColors[i])
+        draw_piece(3, i, tempColors[i])
+        draw_piece(2, i, tempColors[i])
+        draw_piece(1, i, tempColors[i])
         draw_piece(0, i, tempColors[i])
 
 
@@ -84,13 +88,27 @@ def main():
     horizantal_stickers = list(map(generate_corners_sticker, center_position_within_face))
     for i in horizantal_stickers:
         currentList0 = []
+        currentList1 = []
+        currentList2 = []
+        currentList3 = []
+        currentList4 = []
         currentList5 = []
+
         for x in i:
-            # Remember to flip self.faces[0]
+            # Remember to flip self.faces[0], self.faces[2], self.faces[3]
             currentList0.append([x[0], 3 - x[1], 3])
+            currentList1.append([x[0], 3, x[1]])
+            currentList2.append([3, 3 - x[0], x[1]])
+            currentList3.append([3-x[0], 0, x[1]])
+            currentList4.append([0, x[0], x[1]])
             currentList5.append([x[0], x[1], 0])
         faces[0].append(currentList0)
+        faces[1].append(currentList1)
+        faces[2].append(currentList2)
+        faces[3].append(currentList3)
+        faces[4].append(currentList4)
         faces[5].append(currentList5)
+    print(center_position_within_face)
 
     coordinates = []
 
