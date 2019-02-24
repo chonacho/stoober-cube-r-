@@ -72,6 +72,7 @@ def main():
     display = (800,600)
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
     glEnable(GL_DEPTH_TEST)
+    glEnable(GL_MULTISAMPLE)
     tempColors = [[255, 0, 0], [255, 165, 0], [255, 255, 0], [0, 128, 0], [0, 0, 255], [128, 0, 128], [255, 255, 255],
                   [0, 0, 0], [165, 42, 42]]
 
@@ -103,16 +104,13 @@ def main():
     while True:
         keys = pygame.key.get_pressed()
         if keys[K_LEFT]:
-            glRotatef(-1, *percievedZAxis)
-            percievedXAxis = rotate_vector(percievedXAxis, percievedZAxis, 1)
-            print(percievedXAxis)
-            percievedYAxis = rotate_vector(percievedYAxis, percievedZAxis, 1)
-            print(percievedYAxis)
-
+            glRotatef(-1, *percievedYAxis)
+            percievedXAxis = rotate_vector(percievedXAxis, percievedYAxis, 1)
+            percievedZAxis = rotate_vector(percievedZAxis, percievedYAxis, 1)
         if keys[K_RIGHT]:
-            glRotatef(1, *percievedZAxis)
-            percievedXAxis = rotate_vector(percievedXAxis, percievedZAxis, -1)
-            percievedYAxis = rotate_vector(percievedYAxis, percievedZAxis, -1)
+            glRotatef(1, *percievedYAxis)
+            percievedXAxis = rotate_vector(percievedXAxis, percievedYAxis, -1)
+            percievedZAxis = rotate_vector(percievedZAxis, percievedYAxis, -1)
         if keys[K_UP]:
             glRotatef(-1, *percievedXAxis)
             percievedYAxis = rotate_vector(percievedYAxis, percievedXAxis, 1)
