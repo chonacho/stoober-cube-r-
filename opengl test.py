@@ -6,6 +6,33 @@ import itertools
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+import numpy as np
+import math
+
+
+def rotation_matrix(axis, theta):
+    """
+    Return the rotation matrix associated with counterclockwise rotation about
+    the given axis by theta degrees.
+    """
+    theta = theta * math.pi/180
+    axis = np.asarray(axis)
+    axis = axis / math.sqrt(np.dot(axis, axis))
+    a = math.cos(theta / 2.0)
+    b, c, d = -axis * math.sin(theta / 2.0)
+    aa, bb, cc, dd = a * a, b * b, c * c, d * d
+    bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
+    return np.array([[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
+                     [2 * (bc - ad), aa + cc - bb - dd, 2 * (cd + ab)],
+                     [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]])
+
+
+def rotate_vector(vector, axis, theta):
+    """
+    Rotates vector about axis by theta degrees
+    """
+    return np.dot(rotation_matrix(axis, theta), vector)
+
 
 def generate_corners_sticker(center):
     """
@@ -16,8 +43,6 @@ def generate_corners_sticker(center):
     for i in [[-0.5, 0.5], [0.5, 0.5], [0.5, -0.5], [-0.5, -0.5]]:
         coordinates.append([center[0] + i[0], center[1] + i[1]])
     return coordinates
-
-
 
 
 def Cube():
@@ -36,7 +61,6 @@ def draw_piece(face, position, color):
     glBegin(GL_QUADS)
     glColor3ub(*color)
     for x, y, z in faces[face][position]:
-        print(x, y, z)
         glVertex3f(x-1.5, y-1.5, z-1.5)
     glEnd()
 
@@ -72,13 +96,31 @@ def main():
     gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
     glTranslatef(0.0,0.0, -5)
+    percievedZAxis = [0, 0, 1]
+    percievedXAxis = [1, 0, 0]
+    percievedYAxis = [0, 1, 0]
 
     while True:
         keys = pygame.key.get_pressed()
         if keys[K_LEFT]:
-            glRotatef(-1, 0, 0, 1)
+            glRotatef(-1, *percievedZAxis)
+            percievedXAxis = rotate_vector(percievedXAxis, percievedZAxis, 1)
+            print(percievedXAxis)
+            percievedYAxis = rotate_vector(percievedYAxis, percievedZAxis, 1)
+            print(percievedYAxis)
+
         if keys[K_RIGHT]:
-            glRotatef(1, 0, 0, 1)
+            glRotatef(1, *percievedZAxis)
+            percievedXAxis = rotate_vector(percievedXAxis, percievedZAxis, -1)
+            percievedYAxis = rotate_vector(percievedYAxis, percievedZAxis, -1)
+        if keys[K_UP]:
+            glRotatef(-1, *percievedXAxis)
+            percievedYAxis = rotate_vector(percievedYAxis, percievedXAxis, 1)
+            percievedZAxis = rotate_vector(percievedZAxis, percievedXAxis, 1)
+        if keys[K_DOWN]:
+            glRotatef(1, *percievedXAxis)
+            percievedYAxis = rotate_vector(percievedYAxis, percievedXAxis, -1)
+            percievedZAxis = rotate_vector(percievedZAxis, percievedXAxis, -1)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
