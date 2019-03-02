@@ -45,7 +45,40 @@ def generate_corners_sticker(center):
     return coordinates
 
 
-def Cube():
+def drawEdges():
+    """
+    This function draws all the edges of the pieces.
+    """
+    glLineWidth(5)
+    glBegin(GL_LINES)
+    glColor3ub(0, 0, 0)
+    for i in range(2):
+        for x in range(2):
+            for a, b in zip(itertools.permutations([3.01*(i-0.5), (x-0.5), -1.5]), itertools.permutations([3.01*(i-0.5), (x-0.5), 1.5])):
+                glVertex3f(*a)
+                glVertex3f(*b)
+    glEnd()
+    pass
+
+
+def drawCube(cubeState):
+    """
+    cubeState is in the form
+    Cube = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [2, 2, 2, 2, 2, 2, 2, 2, 2],
+    [3, 3, 3, 3, 3, 3, 3, 3, 3],
+    [4, 4, 4, 4, 4, 4, 4, 4, 4],
+    [5, 5, 5, 5, 5, 5, 5, 5, 5]
+    ]
+    where each sublist is a face of the cube.
+    """
+    for face, faceList in enumerate(cubeState):
+        for position, color in enumerate(faceList):
+            draw_piece(face, position, colors[color])
+    drawEdges()
+    """
     for i in range(len(tempColors)):
         draw_piece(5, i, tempColors[i])
         draw_piece(4, i, tempColors[i])
@@ -53,6 +86,7 @@ def Cube():
         draw_piece(2, i, tempColors[i])
         draw_piece(1, i, tempColors[i])
         draw_piece(0, i, tempColors[i])
+    """
 
 
 def draw_piece(face, position, color):
@@ -70,15 +104,26 @@ def draw_piece(face, position, color):
 
 
 def main():
-    global tempColors
+    global colors  # constant
     global faces
+    # global tempColors
+    Cube = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [2, 2, 2, 2, 2, 2, 2, 2, 2],
+        [3, 3, 3, 3, 3, 3, 3, 3, 3],
+        [4, 4, 4, 4, 4, 4, 4, 4, 4],
+        [5, 5, 5, 5, 5, 5, 5, 5, 5]
+    ]
     pygame.init()
     display = (800,600)
-    pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
     glEnable(GL_DEPTH_TEST)
-    glEnable(GL_MULTISAMPLE)
-    tempColors = [[255, 0, 0], [255, 165, 0], [255, 255, 0], [0, 128, 0], [0, 0, 255], [128, 0, 128], [255, 255, 255],
+
+    colors = [[255, 255, 0], [255, 0, 0], [0, 128, 0], [255, 165, 0], [0, 0, 255], [255, 255, 255],
                   [0, 0, 0], [165, 42, 42]]
+    # tempColors = [[255, 0, 0], [255, 165, 0], [255, 255, 0], [0, 128, 0], [0, 0, 255], [128, 0, 128], [255, 255, 255],
+    #             [0, 0, 0], [165, 42, 42]]
 
     center_position_within_face = [list(map(lambda x: x + 0.5, a[::-1])) for a in
                                    itertools.product([2, 1, 0], [0, 1, 2])]
@@ -96,12 +141,12 @@ def main():
 
         for x in i:
             # Remember to flip self.faces[0], self.faces[2], self.faces[3]
-            currentList0.append([x[0], 3 - x[1], 3])
-            currentList1.append([x[0], 3, x[1]])
-            currentList2.append([3, 3 - x[0], x[1]])
-            currentList3.append([3-x[0], 0, x[1]])
-            currentList4.append([0, x[0], x[1]])
-            currentList5.append([x[0], x[1], 0])
+            currentList0.append([x[0], x[1], 3])
+            currentList1.append([x[0], 0, x[1]])
+            currentList2.append([3, x[0], x[1]])
+            currentList3.append([3-x[0], 3, x[1]])
+            currentList4.append([0, 3-x[0], x[1]])
+            currentList5.append([x[0], 3-x[1], 0])
         faces[0].append(currentList0)
         faces[1].append(currentList1)
         faces[2].append(currentList2)
@@ -143,7 +188,7 @@ def main():
                 quit()
 
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        Cube()
+        drawCube(Cube)
         pygame.display.flip()
         pygame.time.wait(10)
 
