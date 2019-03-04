@@ -1,13 +1,17 @@
 import pygame
 from pygame.locals import *
 
-import itertools
-
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-import numpy as np
 import math
+
+import copy
+import string
+
+from itertools import chain, product, permutations
+
+from numpy import array, matrix, matmul,dot,resize,asanyarray,append,vsplit,concatenate,flip,absolute,arange,transpose, asarray
 
 
 def rotation_matrix(axis, theta):
@@ -16,13 +20,13 @@ def rotation_matrix(axis, theta):
     the given axis by theta degrees.
     """
     theta = theta * math.pi/180
-    axis = np.asarray(axis)
-    axis = axis / math.sqrt(np.dot(axis, axis))
+    axis = asarray(axis)
+    axis = axis / math.sqrt(dot(axis, axis))
     a = math.cos(theta / 2.0)
     b, c, d = -axis * math.sin(theta / 2.0)
     aa, bb, cc, dd = a * a, b * b, c * c, d * d
     bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
-    return np.array([[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
+    return array([[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
                      [2 * (bc - ad), aa + cc - bb - dd, 2 * (cd + ab)],
                      [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]])
 
@@ -31,7 +35,7 @@ def rotate_vector(vector, axis, theta):
     """
     Rotates vector about axis by theta degrees
     """
-    return np.dot(rotation_matrix(axis, theta), vector)
+    return dot(rotation_matrix(axis, theta), vector)
 
 
 def generate_corners_sticker(center):
@@ -54,7 +58,7 @@ def drawEdges():
     glColor3ub(0, 0, 0)
     for i in range(2):
         for x in range(2):
-            for a, b in zip(itertools.permutations([3.01*(i-0.5), (x-0.5), -1.5]), itertools.permutations([3.01*(i-0.5), (x-0.5), 1.5])):
+            for a, b in zip(permutations([3.01*(i-0.5), (x-0.5), -1.5]), permutations([3.01*(i-0.5), (x-0.5), 1.5])):
                 glVertex3f(*a)
                 glVertex3f(*b)
     glEnd()
@@ -126,7 +130,7 @@ def main():
     #             [0, 0, 0], [165, 42, 42]]
 
     center_position_within_face = [list(map(lambda x: x + 0.5, a[::-1])) for a in
-                                   itertools.product([2, 1, 0], [0, 1, 2])]
+                                   product([2, 1, 0], [0, 1, 2])]
     # the one-liner above is responsible for creating a list representing location of centers of individual stickers
     # within each face
     faces = [[], [], [], [], [], []]
