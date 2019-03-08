@@ -418,7 +418,7 @@ def main():
     ]
     pygame.init()
     display = (800,600)
-    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+    pygame.display.set_mode(display, DOUBLEBUF | OPENGL | RESIZABLE)
     glEnable(GL_DEPTH_TEST)
 
     colors = [[255, 255, 0], [255, 0, 0], [0, 128, 0], [255, 165, 0], [0, 0, 255], [255, 255, 255],
@@ -458,7 +458,7 @@ def main():
 
     coordinates = []
 
-    gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
+    gluPerspective(75, (display[0]/display[1]), 0.1, 50.0)
 
     glTranslatef(0.0,0.0, -5)
     percievedZAxis = [0, 0, 1]
@@ -505,5 +505,4 @@ def main():
 
 
 main()
-
 
