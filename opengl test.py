@@ -407,6 +407,7 @@ def draw_piece(face, position, color):
 def main():
     global colors  # constant
     global faces
+    print('wasd controls for rotating faces and arrow keys for rotating the whole cube') 
     # global tempColors
     Cube = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
