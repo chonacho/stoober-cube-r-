@@ -93,8 +93,8 @@ class CubeAnimation():
                     pygame.quit()
                     quit()
                 if event.type == pygame.KEYDOWN:
-                    for key, action in keybinds:
-                        if event.key == key:
+                    for action in keybinds:
+                        if event.key == keybinds[action]:
                             self.Cube = action(self.Cube)
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -406,7 +406,6 @@ def backClock(Cube):
     B1 = resize(dot(B, [[0], [0], [1]]), (1, 3))
     C1 = resize(vsplit(C, 1)[0][2], (3, 1))
     D1 = resize(dot(D, [[1], [0], [0]]), (1, 3))
-    print(D1)
     afterImage[0] = concatenate((flip(D1, 1), A[[1, 2]]), axis=0)
     afterImage[2] = append(B[:, [0, 1]], A1, 1)
     afterImage[5] = concatenate((C[[0, 1]], flip(B1, 1)), axis=0)
@@ -426,7 +425,6 @@ def backCounter(Cube):
     B1 = resize(dot(B, [[0], [0], [1]]), (1, 3))
     C1 = resize(vsplit(C, 1)[0][2], (3, 1))
     D1 = resize(dot(D, [[1], [0], [0]]), (1, 3))
-    print(D1)
     afterImage[0] = concatenate((B1, A[[1, 2]]), axis=0)
     afterImage[2] = append(B[:, [0, 1]], flip(C1, 0), 1)
     afterImage[5] = concatenate((C[[0, 1]], D1), axis=0)

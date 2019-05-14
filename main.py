@@ -46,6 +46,7 @@ class OpeningScreen(Frame):
         self.returnFromInstructionsButton.grid_forget()
 
 
+
 master = Tk()
 OpeningScreen(master)
 master.mainloop()
